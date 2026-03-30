@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "next-sanity";
 
-const writeClient = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
-  apiVersion: "2024-01-01",
-  token: process.env.SANITY_API_WRITE_TOKEN,
-  useCdn: false,
-});
-
-const CURATE_PASSWORD = process.env.CURATE_PASSWORD || "maison2026";
+function getWriteClient() {
+  return createClient({
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+    apiVersion: "2024-01-01",
+    token: process.env.SANITY_API_WRITE_TOKEN,
+    useCdn: false,
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
     const { password, outfit } = await request.json();
 
-    if (password !== CURATE_PASSWORD) {
+    if (password !== process.env.CURATE_PASSWORD || "maison2026") {
       return NextResponse.json({ error: "Invalid password" }, { status: 401 });
     }
 
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       })),
     };
 
-    const result = await writeClient.create(doc);
+    const result = await getWriteClient().create(doc);
 
     return NextResponse.json({ success: true, id: result._id });
   } catch (error) {
@@ -54,12 +54,12 @@ export async function POST(request: NextRequest) {
 // GET: fetch existing curated outfits (for display on the curate page)
 export async function GET(request: NextRequest) {
   const pw = request.nextUrl.searchParams.get("password");
-  if (pw !== CURATE_PASSWORD) {
+  if (pw !== process.env.CURATE_PASSWORD || "maison2026") {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 
   try {
-    const outfits = await writeClient.fetch(`*[_type == "curatedOutfit"] | order(_createdAt desc) {
+    const outfits = await getWriteClient().fetch(`*[_type == "curatedOutfit"] | order(_createdAt desc) {
       _id,
       name,
       occasion,
