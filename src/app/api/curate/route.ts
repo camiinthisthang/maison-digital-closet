@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
   try {
     const { password, outfit } = await request.json();
 
-    if (password !== process.env.CURATE_PASSWORD || "maison2026") {
+    if (password !== (process.env.CURATE_PASSWORD || "maison2026")) {
       return NextResponse.json({ error: "Invalid password" }, { status: 401 });
     }
 
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 // GET: fetch existing curated outfits (for display on the curate page)
 export async function GET(request: NextRequest) {
   const pw = request.nextUrl.searchParams.get("password");
-  if (pw !== process.env.CURATE_PASSWORD || "maison2026") {
+  if (pw !== (process.env.CURATE_PASSWORD || "maison2026")) {
     return NextResponse.json({ error: "Invalid password" }, { status: 401 });
   }
 
