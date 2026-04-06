@@ -10,7 +10,6 @@ export interface ClothingItemType {
   occasions?: string[];
   description?: string;
   image: any;
-  price?: number;
 }
 
 export default function ClothingCard({ item }: { item: ClothingItemType }) {
@@ -32,14 +31,7 @@ export default function ClothingCard({ item }: { item: ClothingItemType }) {
           MAISON
         </p>
         <h3 className="font-medium text-gray-900 mt-1">{item.name}</h3>
-        <div className="flex items-center justify-between mt-2">
-          <span className="text-sm text-gray-500 capitalize">{item.category}</span>
-          {item.price && (
-            <span className="text-sm font-medium text-gray-900">
-              ${item.price}
-            </span>
-          )}
-        </div>
+        <span className="text-sm text-gray-500 capitalize mt-2 block">{item.category}</span>
         {item.occasions && item.occasions.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-3">
             {item.occasions.map((occasion) => (

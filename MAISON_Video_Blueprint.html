@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAISON Digital Closet — Video Blueprint</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      background: #fff;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+    h1 { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    h2 { font-size: 1.5rem; font-weight: 700; margin: 48px 0 16px; border-bottom: 2px solid #e5e5e5; padding-bottom: 8px; }
+    h3 { font-size: 1.1rem; font-weight: 600; margin: 28px 0 10px; color: #111; }
+    h4 { font-size: 0.95rem; font-weight: 600; margin: 20px 0 8px; color: #333; }
+    p { margin-bottom: 14px; }
+    ul, ol { padding-left: 22px; margin-bottom: 14px; }
+    li { margin-bottom: 6px; }
+    code {
+      background: #f3f3f3;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.88em;
+    }
+    pre {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: 8px;
+      padding: 20px 24px;
+      overflow-x: auto;
+      margin: 16px 0 22px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.87em;
+      line-height: 1.6;
+    }
+    pre code { background: none; border: none; padding: 0; font-size: inherit; color: inherit; }
+    .subtitle { color: #666; font-size: 1.05rem; margin-bottom: 32px; }
+    .tag { display: inline-block; background: #f0f0f0; border-radius: 4px; padding: 2px 10px; font-size: 0.82rem; margin-right: 6px; color: #555; }
+    .callout {
+      background: #f8f4ff;
+      border-left: 4px solid #7c3aed;
+      border-radius: 4px;
+      padding: 14px 18px;
+      margin: 16px 0;
+    }
+    .callout.blue { background: #eff6ff; border-color: #2563eb; }
+    .callout.green { background: #f0fdf4; border-color: #16a34a; }
+    .callout.amber { background: #fffbeb; border-color: #d97706; }
+    .callout p { margin: 0; }
+    .diagram {
+      background: #fafafa;
+      border: 1px solid #e5e5e5;
+      border-radius: 8px;
+      padding: 24px 32px;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.83em;
+      line-height: 1.8;
+      margin: 16px 0 24px;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0 22px; }
+    th { background: #f5f5f5; text-align: left; padding: 10px 14px; font-size: 0.85rem; font-weight: 600; border: 1px solid #e0e0e0; }
+    td { padding: 9px 14px; border: 1px solid #e0e0e0; font-size: 0.9rem; vertical-align: top; }
+    tr:nth-child(even) td { background: #fafafa; }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: #1a1a1a;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+    .step { display: flex; align-items: flex-start; margin-bottom: 10px; }
+    .toc { background: #f9f9f9; border: 1px solid #e5e5e5; border-radius: 8px; padding: 20px 24px; margin: 24px 0 36px; }
+    .toc a { color: #2563eb; text-decoration: none; }
+    .toc a:hover { text-decoration: underline; }
+    .toc li { margin-bottom: 4px; font-size: 0.92rem; }
+    hr { border: none; border-top: 1px solid #e5e5e5; margin: 36px 0; }
+  </style>
+</head>
+<body>
+
+<h1>MAISON Digital Closet</h1>
+<p class="subtitle">Video Blueprint — How We Built a Fashion AI App with Sanity + Claude</p>
+<p>
+  <span class="tag">Next.js 14</span>
+  <span class="tag">Sanity v3</span>
+  <span class="tag">Claude API</span>
+  <span class="tag">OpenAI</span>
+  <span class="tag">Vercel</span>
+</p>
+
+<div class="toc">
+  <strong>Contents</strong>
+  <ol style="margin-top:10px;">
+    <li><a href="#without-sanity">Why Structured Content? (And What Happens Without It)</a></li>
+    <li><a href="#what-we-built">What We Built</a></li>
+    <li><a href="#architecture">Architecture Overview</a></li>
+    <li><a href="#what-sanity-installs">What Sanity Installs Out of the Box</a></li>
+    <li><a href="#build-from-scratch">How to Build This From Scratch</a></li>
+    <li><a href="#step1">Step 1 — Sanity Schema</a></li>
+    <li><a href="#step2">Step 2 — Sanity Client + Image URLs</a></li>
+    <li><a href="#step3">Step 3 — GROQ Queries</a></li>
+    <li><a href="#step4">Step 4 — Embedded Studio + Custom Actions</a></li>
+    <li><a href="#step5">Step 5 — Auto-Tag API Route</a></li>
+    <li><a href="#step6">Step 6 — Outfit Recommendation API</a></li>
+    <li><a href="#step7">Step 7 — Frontend UI</a></li>
+    <li><a href="#bonus">Bonus Features</a></li>
+    <li><a href="#data-flow">Data Flow Diagram</a></li>
+    <li><a href="#filming-guide">Video Filming Guide</a></li>
+  </ol>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="without-sanity">1. Why Structured Content? (And What Happens Without It)</h2>
+
+<p>The phrase Sanity uses is "structured content." It sounds like jargon, but it's actually the whole reason this app works the way it does — and understanding it is what separates a project that scales from one that falls apart.</p>
+
+<h3>What "structured" actually means</h3>
+
+<p>Most apps store content as <strong>blobs</strong> — a big chunk of HTML, a Markdown file, a wall of text. That's fine for a blog. But this app needs to do things with clothing data: filter by season, sort by category, send inventory to an AI, write AI results back to specific fields. You can't do any of that with a blob.</p>
+
+<p>Structured content means every piece of data has a defined shape. Each clothing item isn't just a description — it's a document with discrete, named fields:</p>
+
+<pre><code>{
+  "name": "Ivory Silk Blouse",
+  "category": "tops",          // not "Top" or "T" — exactly "tops"
+  "color": "ivory",
+  "season": ["spring", "summer"],
+  "occasions": ["casual", "brunch"],
+  "image": { "_ref": "image-abc123-800x600-jpg" }
+}</code></pre>
+
+<p>Because of this structure, the AI prompt can say <em>"category must be one of: tops, bottoms, dresses..."</em> and trust that Claude's response will be queryable. The frontend can filter items by season without parsing anything. The packing planner can group items by occasion without writing custom logic. Structure is what makes the AI integration clean instead of fragile.</p>
+
+<h3>What you'd deal with if you stored this as unstructured data</h3>
+
+<p>Imagine instead you just kept notes in a Google Doc, or stored everything as a block of text per item. The moment you want to ask "give me all the tops that work for fall," you're stuck — there's nothing to filter on. You'd send the entire raw text dump to Claude every time and hope it figures out what's a top vs. a dress. That's slow, expensive, and unreliable.</p>
+
+<p>Or say you stored it as a flat JSON file. That's more structured, but now:</p>
+<ul>
+  <li>Adding a new item means editing a file, committing it, and deploying — just to add a shirt</li>
+  <li>When Claude auto-tags an item, there's nowhere to write the result back to. There's no concept of "update this document's field." You'd be building a mini-database from scratch</li>
+  <li>Images have nowhere to live — you'd have to manage S3, resizing, CDN yourself</li>
+  <li>If a friend wants to help catalog items, they're editing raw JSON</li>
+</ul>
+
+<h3>Sanity is just a very good place to put structured content</h3>
+
+<p>The thing Sanity does is give you a proper home for that structure. You define the shape once in TypeScript — that's the schema. Sanity reads it and:</p>
+<ul>
+  <li>Generates the Studio editing UI automatically (dropdowns, checkboxes, image upload — all from your field definitions)</li>
+  <li>Stores the data in a managed database called the Content Lake</li>
+  <li>Hosts the images on a CDN with on-the-fly resizing</li>
+  <li>Lets you query it with GROQ — one line to filter, sort, and join across document types</li>
+</ul>
+
+<p>The auto-tag feature is the payoff. When Claude returns <code>{ category: "tops", season: ["spring"] }</code>, we call <code>patch.execute([{ set: tags }])</code> and those exact values land in the exact fields Sanity expects. That only works because the schema defined what those fields are, and the prompt was written to match them. The structure connects everything.</p>
+
+<div class="callout">
+  <p><strong>One-line summary for the video:</strong> Unstructured content is for humans to read. Structured content is for code to use. The moment you want AI to do something useful with your data — filter it, reason about it, write back to it — you need structure. Sanity is just the cleanest way to get there.</p>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="what-we-built">2. What We Built</h2>
+
+
+<p>MAISON is a digital wardrobe app for a fashion brand. It solves a real problem: when you own hundreds of clothing items, figuring out what to wear is hard. The app does three things:</p>
+
+<ol>
+  <li><strong>Catalog</strong> — Upload photos of every piece in your closet into Sanity CMS. Claude Vision auto-fills the name, category, color, seasons, and occasions for you.</li>
+  <li><strong>Recommend</strong> — Describe an event ("rooftop dinner in Miami") and get a styled outfit recommendation pulled from your actual inventory.</li>
+  <li><strong>Pack</strong> — Tell it where you're going and how many days, and it generates a complete packing plan with daily outfits.</li>
+</ol>
+
+<p>The whole point of building on top of Sanity is that your clothing inventory lives in a structured content database — not a flat JSON file, not a spreadsheet. This means you get Studio UI for free, GROQ for querying, image hosting on Sanity's CDN, and the ability to add custom AI-powered workflows directly into the editor.</p>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="architecture">3. Architecture Overview</h2>
+
+<div class="diagram">┌─────────────────────────────────────────────────────────────────┐
+│                        SANITY LAYER                             │
+│  • Content Lake (database)    • CDN image hosting               │
+│  • Embedded Studio at /studio  • Custom AutoTag Document Action │
+│  • clothingItem schema        • curatedOutfit schema            │
+└────────────────────────┬────────────────────────────────────────┘
+                         │  GROQ queries + Sanity client
+┌────────────────────────▼────────────────────────────────────────┐
+│                      NEXT.JS LAYER                              │
+│  • /app/page.tsx (homepage)   • /studio/** (embedded Studio)    │
+│  • /api/auto-tag/route.ts     • /api/recommend/route.ts         │
+│  • /api/pack/route.ts         • /api/illustrate/route.ts        │
+│  • /curate (friend curation)  • Components: OutfitResult etc.   │
+└────────────────────────┬────────────────────────────────────────┘
+                         │  HTTP API calls
+┌────────────────────────▼────────────────────────────────────────┐
+│                   EXTERNAL AI LAYER                             │
+│  • Anthropic (Claude)     • claude-sonnet-4-20250514            │
+│    – Vision: auto-tag       – Text: outfit recommendation       │
+│    – Vision: vibe check     – Text: packing plan                │
+│  • OpenAI (DALL-E 3)      • Fashion illustration generation     │
+└─────────────────────────────────────────────────────────────────┘</div>
+
+<p>The key design principle: <strong>Sanity is the single source of truth</strong>. The AI never stores anything — it reads from Sanity, reasons about it, and writes back to Sanity (via the auto-tag action). The frontend just fetches from Sanity and sends events to the API routes.</p>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="what-sanity-installs">4. What Sanity Installs Out of the Box</h2>
+
+<p>This is the most common point of confusion: <strong>Sanity does not generate your app files</strong>. Here's exactly what you get vs. what you write yourself.</p>
+
+<h3>When you run <code>npx sanity@latest init</code> inside a Next.js project, Sanity creates:</h3>
+
+<table>
+  <tr><th>File / Folder</th><th>What it is</th><th>Write it yourself?</th></tr>
+  <tr>
+    <td><code>sanity.config.ts</code></td>
+    <td>The Studio configuration file — project ID, dataset, plugins, schema registration</td>
+    <td>Generated, but you edit it heavily</td>
+  </tr>
+  <tr>
+    <td><code>sanity.cli.ts</code></td>
+    <td>CLI config — just your project ID and dataset for the Sanity CLI</td>
+    <td>Generated, leave it alone</td>
+  </tr>
+  <tr>
+    <td><code>schemaTypes/index.ts</code></td>
+    <td>The schema index file — an empty array <code>[]</code> where you register your types</td>
+    <td>Generated, you add to it</td>
+  </tr>
+  <tr>
+    <td><code>schemaTypes/post.ts</code> (example)</td>
+    <td>An example "post" schema — just to show you the pattern</td>
+    <td>Generated, you replace it with your own schemas</td>
+  </tr>
+  <tr>
+    <td><code>next.config.ts</code> additions</td>
+    <td>Adds Sanity CDN image domain to Next.js image allowlist</td>
+    <td>Generated automatically</td>
+  </tr>
+</table>
+
+<h3>What you write entirely yourself:</h3>
+
+<table>
+  <tr><th>File</th><th>What it does</th></tr>
+  <tr><td><code>src/sanity/schemas/clothingItem.ts</code></td><td>Your clothing item data model</td></tr>
+  <tr><td><code>src/sanity/schemas/curatedOutfit.ts</code></td><td>Your curated outfit data model</td></tr>
+  <tr><td><code>src/sanity/client.ts</code></td><td>The Sanity client for fetching data in Next.js</td></tr>
+  <tr><td><code>src/sanity/image.ts</code></td><td>The image URL builder utility</td></tr>
+  <tr><td><code>src/sanity/lib/queries.ts</code></td><td>All GROQ queries</td></tr>
+  <tr><td><code>src/sanity/actions/autoTagAction.ts</code></td><td>Custom Studio document action for AI auto-tagging</td></tr>
+  <tr><td><code>src/app/studio/[[...tool]]/page.tsx</code></td><td>The embedded Studio route inside Next.js</td></tr>
+  <tr><td><code>src/app/api/auto-tag/route.ts</code></td><td>API route that calls Claude Vision</td></tr>
+  <tr><td><code>src/app/api/recommend/route.ts</code></td><td>API route for outfit recommendations</td></tr>
+  <tr><td><code>src/app/api/pack/route.ts</code></td><td>API route for trip packing plans</td></tr>
+  <tr><td><code>src/app/page.tsx</code></td><td>The homepage UI</td></tr>
+  <tr><td><code>src/components/*</code></td><td>All UI components</td></tr>
+</table>
+
+<div class="callout blue">
+  <p><strong>Summary:</strong> Sanity gives you the SDK, an empty schema folder, and a config file. The database, the Studio UI, the CDN — all that infrastructure is fully managed by Sanity. But every piece of data modeling, querying, and custom behavior is code you write.</p>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="build-from-scratch">5. How to Build This From Scratch</h2>
+
+<p>These are the exact steps, in order, to reproduce this project. No prior Sanity experience needed.</p>
+
+<h3>Prerequisites</h3>
+<ul>
+  <li>Node.js 18+</li>
+  <li>A Sanity account (free at sanity.io)</li>
+  <li>An Anthropic API key (console.anthropic.com)</li>
+  <li>An OpenAI API key (for illustrations — optional)</li>
+</ul>
+
+<h3>Step 1 — Create the Next.js app</h3>
+<pre><code>npx create-next-app@latest digital-closet \
+  --typescript \
+  --tailwind \
+  --app \
+  --src-dir \
+  --import-alias "@/*"
+
+cd digital-closet</code></pre>
+
+<h3>Step 2 — Install Sanity into your Next.js project</h3>
+<pre><code>npx sanity@latest init --env</code></pre>
+<p>This command will:</p>
+<ul>
+  <li>Ask you to log in to Sanity (or create an account)</li>
+  <li>Create a new Sanity project and dataset</li>
+  <li>Generate <code>sanity.config.ts</code>, <code>sanity.cli.ts</code>, and example schema files</li>
+  <li>Write your <code>NEXT_PUBLIC_SANITY_PROJECT_ID</code> and <code>NEXT_PUBLIC_SANITY_DATASET</code> into <code>.env.local</code></li>
+</ul>
+
+<h3>Step 3 — Install all dependencies</h3>
+<pre><code>npm install @anthropic-ai/sdk @sanity/image-url next-sanity openai</code></pre>
+
+<h3>Step 4 — Add CORS for your local dev server</h3>
+<p>Go to <strong>sanity.io/manage</strong> → your project → API → CORS Origins. Add:</p>
+<ul>
+  <li><code>http://localhost:3000</code></li>
+  <li>Your Vercel deploy URL (when you deploy)</li>
+</ul>
+
+<h3>Step 5 — Add your API keys to .env.local</h3>
+<pre><code>NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
+NEXT_PUBLIC_SANITY_DATASET=production
+ANTHROPIC_API_KEY=sk-ant-...
+OPENAI_API_KEY=sk-...
+CURATE_PASSWORD=maison2026</code></pre>
+
+<h3>Step 6 — Build the app</h3>
+<p>Follow Steps 1–7 in the sections below to write each file.</p>
+
+<h3>Step 7 — Deploy to Vercel</h3>
+<pre><code>npm install -g vercel
+vercel
+
+# Add env vars on Vercel dashboard or via CLI:
+vercel env add ANTHROPIC_API_KEY
+vercel env add OPENAI_API_KEY
+vercel env add CURATE_PASSWORD</code></pre>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="step1">Step 1 — Sanity Schema</h2>
+<p><em>Files: <code>src/sanity/schemas/clothingItem.ts</code>, <code>src/sanity/schemas/curatedOutfit.ts</code>, <code>src/sanity/schemas/index.ts</code></em></p>
+
+<p>The schema defines your data model. Sanity reads these TypeScript objects and automatically generates the Studio UI — every field becomes a form input. No React needed for the CMS interface.</p>
+
+<h3>clothingItem.ts</h3>
+<pre><code>import { defineField, defineType } from "sanity";
+
+export const clothingItem = defineType({
+  name: "clothingItem",      // used in GROQ: *[_type == "clothingItem"]
+  title: "Clothing Item",    // label shown in Studio sidebar
+  type: "document",          // top-level content type
+  fields: [
+    defineField({ name: "name", type: "string", validation: r => r.required() }),
+    defineField({
+      name: "category",
+      type: "string",
+      options: {
+        list: [
+          { title: "Tops",       value: "tops"       },
+          { title: "Bottoms",    value: "bottoms"    },
+          { title: "Dresses",    value: "dresses"    },
+          { title: "Outerwear",  value: "outerwear"  },
+          { title: "Shoes",      value: "shoes"      },
+          { title: "Accessories",value: "accessories"},
+        ],
+      },
+    }),
+    defineField({ name: "color", type: "string" }),
+    defineField({
+      name: "season",
+      type: "array",
+      of: [{ type: "string" }],
+      options: {
+        list: ["spring","summer","fall","winter"].map(s => ({ title: s, value: s })),
+      },
+    }),
+    defineField({
+      name: "occasions",
+      type: "array",
+      of: [{ type: "string" }],
+      options: {
+        list: ["casual","formal","business","party","outdoor","date-night","wedding","brunch"]
+          .map(o => ({ title: o, value: o })),
+      },
+    }),
+    defineField({ name: "description", type: "text", rows: 3 }),
+    defineField({ name: "image", type: "image", options: { hotspot: true }, validation: r => r.required() }),
+    defineField({ name: "price", type: "number" }),
+  ],
+  preview: {
+    select: { title: "name", subtitle: "category", media: "image" },
+  },
+});</code></pre>
+
+<div class="callout">
+  <p><strong>Critical:</strong> The <code>value</code> strings in <code>options.list</code> (e.g. <code>"tops"</code>, <code>"casual"</code>) must exactly match what you put in your Claude prompt later. If they're out of sync, Claude might return <code>"Top"</code> and Sanity will reject it.</p>
+</div>
+
+<h3>curatedOutfit.ts</h3>
+<pre><code>import { defineField, defineType } from "sanity";
+
+export const curatedOutfit = defineType({
+  name: "curatedOutfit",
+  title: "Curated Outfit",
+  type: "document",
+  fields: [
+    defineField({ name: "name", type: "string", validation: r => r.required() }),
+    defineField({
+      name: "occasion",
+      type: "string",
+      options: {
+        list: ["casual","formal","business","party","outdoor","date-night","wedding","brunch"]
+          .map(o => ({ title: o, value: o })),
+      },
+    }),
+    defineField({
+      name: "items",
+      type: "array",
+      of: [{ type: "reference", to: [{ type: "clothingItem" }] }],
+      validation: r => r.min(2).max(6),
+    }),
+    defineField({ name: "curatorName", type: "string" }),
+    defineField({ name: "notes", type: "text", rows: 3 }),
+  ],
+});</code></pre>
+
+<h3>schemas/index.ts — Register both schemas</h3>
+<pre><code>import { clothingItem } from "./clothingItem";
+import { curatedOutfit } from "./curatedOutfit";
+
+export const schemaTypes = [clothingItem, curatedOutfit];</code></pre>
+
+<div class="callout amber">
+  <p><strong>Easy mistake:</strong> If you create a schema but forget to add it to <code>schemaTypes</code>, Studio will not show it. This is the most common "why doesn't my schema appear" issue.</p>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="step2">Step 2 — Sanity Client + Image URLs</h2>
+<p><em>Files: <code>src/sanity/client.ts</code>, <code>src/sanity/image.ts</code></em></p>
+
+<h3>client.ts — how your Next.js app talks to Sanity</h3>
+<pre><code>import { createClient } from "next-sanity";
+
+export const client = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset:   process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+  apiVersion: "2024-01-01",
+  useCdn: false,  // false = always fresh data (no CDN cache)
+});</code></pre>
+
+<h3>image.ts — why this file exists</h3>
+
+<p>Sanity does not store images as URLs. It stores them as <strong>references</strong> like <code>image-abc123def456-800x600-jpg</code>. This is intentional — it lets Sanity serve optimized images at any size on demand from their CDN.</p>
+
+<p>But Claude needs an actual <code>https://</code> URL to look at an image. So you need to convert the reference into a URL first.</p>
+
+<pre><code>import imageUrlBuilder from "@sanity/image-url";
+import { client } from "./client";
+
+const builder = imageUrlBuilder(client);
+
+// Usage: urlFor(item.image).width(400).url()
+// Returns: https://cdn.sanity.io/images/projectId/dataset/abc123.jpg?w=400
+export function urlFor(source: any) {
+  return builder.image(source);
+}</code></pre>
+
+<p>The URL builder chains transforms before generating the final URL:</p>
+<ul>
+  <li><code>.width(400)</code> — resize to 400px wide</li>
+  <li><code>.height(400)</code> — resize to 400px tall</li>
+  <li><code>.quality(70)</code> — compress to 70% quality</li>
+  <li><code>.format("webp")</code> — convert to WebP</li>
+  <li><code>.url()</code> — finalize and return the string</li>
+</ul>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="step3">Step 3 — GROQ Queries</h2>
+<p><em>File: <code>src/sanity/lib/queries.ts</code></em></p>
+
+<p>GROQ (Graph-Relational Object Queries) is Sanity's query language. Think of it like SQL but for JSON documents. You write a filter expression and a projection (which fields to return).</p>
+
+<pre><code>// Fetch all items, newest first
+export const ALL_CLOTHING_QUERY = `
+  *[_type == "clothingItem"] | order(_createdAt desc) {
+    _id, name, category, color, season, occasions, description, image, price
+  }
+`;
+
+// Fetch curated outfits AND resolve the clothing item references
+// The -> operator is a JOIN — it follows the reference and returns the full document
+export const CURATED_OUTFITS_QUERY = `
+  *[_type == "curatedOutfit"] {
+    _id, name, occasion, curatorName, notes,
+    "items": items[]-> {
+      _id, name, category, color, season, occasions, description, image
+    }
+  }
+`;
+
+// Filter by category using a $parameter (prevents injection, enables reuse)
+export const CLOTHING_BY_CATEGORY_QUERY = `
+  *[_type == "clothingItem" && category == $category] | order(_createdAt desc) {
+    _id, name, category, color, season, occasions, description, image, price
+  }
+`;</code></pre>
+
+<h3>How these queries are used</h3>
+<pre><code>// In a Server Component (no useEffect needed — runs on the server):
+const items = await client.fetch(ALL_CLOTHING_QUERY);
+
+// With parameters:
+const tops = await client.fetch(CLOTHING_BY_CATEGORY_QUERY, { category: "tops" });
+
+// Fetching multiple queries in parallel:
+const [items, outfits] = await Promise.all([
+  client.fetch(ALL_CLOTHING_QUERY),
+  client.fetch(CURATED_OUTFITS_QUERY),
+]);</code></pre>
+
+<div class="callout blue">
+  <p><strong>Why three separate queries?</strong> Each is optimized for a different use case: <code>ALL_CLOTHING_QUERY</code> feeds the homepage grid and the AI prompt. <code>CURATED_OUTFITS_QUERY</code> needs the reference-resolution (<code>-&gt;</code>) because outfits store item IDs, not the full objects. <code>CLOTHING_BY_CATEGORY_QUERY</code> is for when you want to filter without fetching everything.</p>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="step4">Step 4 — Embedded Studio + Custom Actions</h2>
+<p><em>Files: <code>src/app/studio/[[...tool]]/page.tsx</code>, <code>sanity.config.ts</code>, <code>src/sanity/actions/autoTagAction.ts</code></em></p>
+
+<h3>How we added the "Auto-Tag with AI" button to Studio</h3>
+
+<p>When you use the default Sanity hosted studio (the one at <code>yourproject.sanity.studio</code>), you get whatever Sanity ships out of the box. You can edit content, upload images, publish documents — but you can't add your own buttons or custom behavior to the editor. It's a black box.</p>
+
+<p>Embedding the studio inside your Next.js app changes that. Instead of Sanity hosting the studio on their servers, <em>you</em> host it — it lives at <code>/studio</code> in your own app. And because it's running inside your codebase, it uses your <code>sanity.config.ts</code>, which means you can configure it however you want.</p>
+
+<p>Sanity has a concept called <strong>Document Actions</strong> — these are buttons that appear in the editor toolbar for any document type. By default you get Publish, Unpublish, Delete. But you can register your own. We wrote one called <code>AutoTagAction</code> that adds an "Auto-Tag with AI" button specifically to clothing item documents.</p>
+
+<p>When clicked, it:</p>
+<ol>
+  <li>Grabs the uploaded image from the current document</li>
+  <li>Sends it to our <code>/api/auto-tag</code> route, which calls Claude Vision</li>
+  <li>Takes the JSON Claude returns and writes it directly back into the document's fields</li>
+</ol>
+
+<p>This is only possible because the studio is embedded. The hosted studio has no idea our Next.js app even exists, let alone its API routes. Embedding is what connects the editor to your backend.</p>
+
+<div class="callout blue">
+  <p><strong>The pattern generalizes.</strong> You could use the same approach to add any AI-powered button to any document type — "Generate SEO description," "Translate to Spanish," "Suggest related products." Any time you want the content editor to trigger AI, embedded studio + Document Actions is how you wire it up.</p>
+</div>
+
+<h3>Hosted vs Embedded — quick comparison</h3>
+
+<table>
+  <tr><th></th><th>Hosted Studio (sanity.studio)</th><th>Embedded Studio (/studio in your app)</th></tr>
+  <tr>
+    <td>URL</td><td>your-project.sanity.studio</td><td>yourapp.com/studio</td>
+  </tr>
+  <tr>
+    <td>Config</td><td>Sanity's defaults</td><td>Your <code>sanity.config.ts</code></td>
+  </tr>
+  <tr>
+    <td>Custom Document Actions</td><td>Not possible</td><td>Yes — this is the key advantage</td>
+  </tr>
+  <tr>
+    <td>Deploy</td><td>Separate deploy to Sanity</td><td>Ships with your Next.js app automatically</td>
+  </tr>
+</table>
+
+<h3>The Studio page — just two lines of real code</h3>
+<pre><code>"use client";
+import { NextStudio } from "next-sanity/studio";
+import config from "../../../../sanity.config";
+
+export default function StudioPage() {
+  return &lt;NextStudio config={config} /&gt;;
+}</code></pre>
+
+<p>The <code>[[...tool]]</code> folder name is a Next.js "catch-all" route — it matches <code>/studio</code>, <code>/studio/structure</code>, <code>/studio/vision</code>, and any sub-path the Studio needs.</p>
+
+<h3>sanity.config.ts — registering the custom action</h3>
+<pre><code>import { defineConfig } from "sanity";
+import { structureTool } from "sanity/structure";
+import { visionTool } from "@sanity/vision";
+import { assist } from "@sanity/assist";
+import { schemaTypes } from "@/sanity/schemas";
+import { AutoTagAction } from "@/sanity/actions/autoTagAction";
+
+export default defineConfig({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+  basePath: "/studio",
+  plugins: [structureTool(), visionTool(), assist()],
+  schema: { types: schemaTypes },
+
+  document: {
+    // Add our custom button to clothingItem documents only
+    actions: (prev, context) => {
+      if (context.schemaType === "clothingItem") {
+        return [AutoTagAction, ...prev];
+      }
+      return prev;
+    },
+  },
+});</code></pre>
+
+<h3>autoTagAction.ts — the "Auto-Tag with AI" button</h3>
+<pre><code>import { useDocumentOperation, useClient } from "sanity";
+import { useState, useCallback } from "react";
+import imageUrlBuilder from "@sanity/image-url";
+
+export function AutoTagAction(props: any) {
+  const { draft, published, id, type, onComplete } = props;
+  const doc = draft || published;
+
+  // useDocumentOperation gives us the "patch" operation —
+  // the ability to write fields back into this document
+  const { patch } = useDocumentOperation(id, type);
+  const client = useClient({ apiVersion: "2024-01-01" });
+  const [isRunning, setIsRunning] = useState(false);
+
+  const onAutoTag = useCallback(async () => {
+    if (!doc?.image?.asset?._ref) {
+      alert("Please upload an image first.");
+      return;
+    }
+    setIsRunning(true);
+    try {
+      // 1. Convert the Sanity image ref to a CDN URL
+      const imageUrl = imageUrlBuilder(client).image(doc.image).width(1024).url();
+
+      // 2. Send to our API route, which calls Claude Vision
+      const res = await fetch("/api/auto-tag", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl }),
+      });
+      const tags = await res.json();
+
+      // 3. Write all AI-generated values back into the document fields
+      patch.execute([{ set: {
+        name: tags.name,
+        category: tags.category,
+        color: tags.color,
+        season: tags.season,
+        occasions: tags.occasions,
+        description: tags.description,
+      }}]);
+    } finally {
+      setIsRunning(false);
+      if (onComplete) onComplete();
+    }
+  }, [doc, client, patch, onComplete]);
+
+  return {
+    label: isRunning ? "Analyzing..." : "Auto-Tag with AI",
+    disabled: isRunning || !doc?.image?.asset?._ref,
+    onHandle: onAutoTag,
+    tone: "primary" as const,
+  };
+}</code></pre>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="step5">Step 5 — Auto-Tag API Route</h2>
+<p><em>File: <code>src/app/api/auto-tag/route.ts</code></em></p>
+
+<p>This is the bridge between Studio and Claude. The action sends an image URL; this route forwards it to Claude's Vision API and returns structured JSON.</p>
+
+<pre><code>import { NextRequest, NextResponse } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
+
+const anthropic = new Anthropic(); // reads ANTHROPIC_API_KEY automatically
+
+export async function POST(request: NextRequest) {
+  const { imageUrl } = await request.json();
+
+  const message = await anthropic.messages.create({
+    model: "claude-sonnet-4-20250514",
+    max_tokens: 1024,
+    messages: [{
+      role: "user",
+      content: [
+        {
+          type: "image",
+          source: { type: "url", url: imageUrl },  // Claude fetches this URL
+        },
+        {
+          type: "text",
+          text: `You are a fashion product cataloger. Analyze this clothing item image and return ONLY valid JSON:
+
+{
+  "name": "A concise product name",
+  "category": "MUST be exactly one of: tops, bottoms, dresses, outerwear, shoes, accessories",
+  "color": "The primary color",
+  "season": ["Array of: spring, summer, fall, winter"],
+  "occasions": ["Array of: casual, formal, business, party, outdoor, date-night, wedding, brunch"],
+  "description": "A 2-3 sentence product description"
+}
+
+Return ONLY the JSON object, no markdown.`,
+        },
+      ],
+    }],
+  });
+
+  const textBlock = message.content.find(b => b.type === "text");
+  let json = (textBlock as any).text.trim();
+
+  // Sometimes Claude wraps in ```json fences — strip them
+  if (json.startsWith("```")) {
+    json = json.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
+  }
+
+  return NextResponse.json(JSON.parse(json));
+}</code></pre>
+
+<div class="callout">
+  <p><strong>Schema-prompt connection:</strong> The category values in this prompt (<code>tops, bottoms, dresses...</code>) must exactly match the <code>value</code> fields in <code>clothingItem.ts</code>. Claude has no awareness of your schema — you have to bridge that gap manually in the prompt text.</p>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="schema-to-ai">How the Schema Powers the AI Recommendation</h2>
+
+<p>This is the part worth spending time on in the video, because it's the core argument for using Sanity over anything else.</p>
+
+<p>When Claude recommends an outfit, it isn't generating text from scratch and hoping for the best. It's working from a structured inventory — a list of real objects, each with the exact same fields, in a predictable shape. That structure comes directly from the schema you defined in <code>clothingItem.ts</code>.</p>
+
+<p>Here's what Claude actually receives when the recommendation route runs:</p>
+
+<pre><code>[
+  {
+    "_id": "abc123",
+    "name": "White Linen Blazer",
+    "category": "outerwear",
+    "color": "white",
+    "season": ["spring", "summer"],
+    "occasions": ["dinner", "travel"],
+    "description": "Relaxed fit, slightly oversized, unlined"
+  },
+  {
+    "_id": "def456",
+    "name": "Wide-Leg Cream Trousers",
+    "category": "bottoms",
+    "color": "cream",
+    "season": ["spring", "summer"],
+    "occasions": ["dinner", "work", "travel"],
+    "description": "High waisted, flowy fabric"
+  },
+  ...300 more items
+]</code></pre>
+
+<p>Because every item has the same shape, Claude can reason across the entire closet systematically. It can filter by season, cross-reference occasions, think about color relationships between specific pieces, and return a response that references items by their actual <code>_id</code>. The app then uses those IDs to look up the full item records — including their Sanity image URLs — to display in the UI.</p>
+
+<p>Compare this to what you'd have if you didn't use structured content:</p>
+
+<ul>
+  <li>If clothes were stored as flat image files with no metadata, Claude would have to guess what each item was from the photo alone — and it couldn't filter by season, occasion, or color without looking at every image every time</li>
+  <li>If you used a spreadsheet or a loose JSON file, you'd have no editor UI, no image hosting, no query language. You'd be writing custom file-parsing logic just to get the data into a shape Claude can use</li>
+  <li>If you built your own database from scratch, you'd need to design the schema, build the admin UI, set up image storage and CDN, write an API layer — all before you could write a single line of AI logic</li>
+</ul>
+
+<p>Sanity gives you all of that. The schema is the contract that makes the AI useful. Every field you define in <code>clothingItem.ts</code> — category, season, occasions — becomes a dimension the AI can reason across. The more structured the data, the smarter the recommendations feel.</p>
+
+<div class="callout blue">
+  <p><strong>The one-liner version:</strong> Unstructured content (raw photos, free-text notes) makes AI guessing. Structured content makes AI reasoning. Sanity is what turns a folder of outfit photos into a database an AI can actually think with.</p>
+</div>
+
+<h3>The schema → prompt connection</h3>
+
+<p>There's one subtle but important detail: the values in the schema have to match the values in the AI prompt. When we defined <code>category</code> in the schema, we gave it a fixed list of options: <code>tops</code>, <code>bottoms</code>, <code>dresses</code>, <code>outerwear</code>, <code>shoes</code>, <code>accessories</code>. The auto-tag prompt tells Claude to return one of those exact values. The recommendation prompt tells Claude to filter by those exact values.</p>
+
+<p>If the schema says <code>"outerwear"</code> and the prompt says <code>"jacket"</code>, nothing breaks — but the AI starts making up category names that don't match the data, and filtering stops working reliably. The schema is the source of truth. The prompt has to respect it.</p>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="step6">Step 6 — Outfit Recommendation API</h2>
+<p><em>File: <code>src/app/api/recommend/route.ts</code></em></p>
+
+<p>This is the most complex route. It does three things in a loop:</p>
+
+<ol>
+  <li><strong>Pick an outfit</strong> — sends the full inventory as JSON to Claude, asks it to select item IDs</li>
+  <li><strong>Visual vibe check</strong> — downloads the actual images of selected items and sends them to Claude Vision to verify the outfit looks good</li>
+  <li><strong>Retry if needed</strong> — if the vibe check fails, feeds the feedback back into a new pick attempt (up to 3 attempts)</li>
+</ol>
+
+<pre><code>// Simplified version of the core loop:
+
+const [allItems, curatedOutfits] = await Promise.all([
+  client.fetch(ALL_CLOTHING_QUERY),
+  client.fetch(CURATED_OUTFITS_QUERY),
+]);
+
+// Step 1: Pick outfit from structured data
+const pickResponse = await anthropic.messages.create({
+  model: "claude-sonnet-4-20250514",
+  max_tokens: 1024,
+  messages: [{
+    role: "user",
+    content: `You are a personal stylist. Here is the full inventory:
+${JSON.stringify(inventory)}
+
+EVENT: "${eventDescription}"
+
+CURATED OUTFITS (these define the client's taste):
+${curatedOutfitsText}
+
+Pick the best outfit. Return JSON: { outfitName, selectedItems: ["id1","id2"], reasoning, stylingTips }`
+  }],
+});
+
+// Step 2: Download images and send to Claude for visual check
+const vibeCheck = await anthropic.messages.create({
+  model: "claude-sonnet-4-20250514",
+  max_tokens: 512,
+  messages: [{
+    role: "user",
+    content: [
+      { type: "text", text: "Do these pieces look good together visually?" },
+      ...itemImages,   // base64 images of each selected piece
+      ...inspoImages,  // reference images of outfits the client loves
+    ],
+  }],
+});</code></pre>
+
+<div class="callout green">
+  <p><strong>Why the vibe check matters:</strong> Claude can pick items that make logical sense ("navy blazer + white shirt = business casual") but look bad together when you actually see the photos. The visual check catches mismatched textures, clashing tones, and proportion problems that text descriptions miss.</p>
+</div>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="step7">Step 7 — Frontend UI</h2>
+<p><em>Files: <code>src/app/page.tsx</code>, <code>src/components/ClosetGrid.tsx</code>, <code>src/components/OutfitRecommender.tsx</code>, <code>src/components/OutfitResult.tsx</code></em></p>
+
+<p>The homepage is a Next.js Server Component that fetches clothing data at request time and passes it to the grid:</p>
+
+<pre><code>// app/page.tsx — runs on the server, no useEffect needed
+export default async function Home() {
+  const items = await client.fetch(ALL_CLOTHING_QUERY);
+  return (
+    &lt;main&gt;
+      &lt;ClosetGrid items={items} /&gt;      {/* displays the browseable collection */}
+      &lt;OutfitRecommender /&gt;             {/* client component with the AI chat UI */}
+    &lt;/main&gt;
+  );
+}</code></pre>
+
+<p>The <code>OutfitRecommender</code> is a Client Component because it has interactive state (input field, loading state, result display). It calls <code>/api/recommend</code> and renders the <code>OutfitResult</code> when done.</p>
+
+<p>The <code>OutfitResult</code> component:</p>
+<ul>
+  <li>Shows the outfit name and reasoning</li>
+  <li>Displays selected items in a horizontal strip with their photos (from Sanity CDN)</li>
+  <li>Opens a lightbox modal on item click</li>
+  <li>Auto-triggers the <code>/api/illustrate</code> endpoint to generate a DALL-E fashion illustration</li>
+  <li>Shows the illustration as a hero image above the item strip</li>
+</ul>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="bonus">Bonus Features</h2>
+
+<h3>Trip Packing Planner</h3>
+<p>The <code>/api/pack</code> route takes a destination, number of days, and travel style. It fetches the full inventory and asks Claude to plan daily outfits. Important: for trips longer than ~14 days, you need <code>max_tokens: 4096</code> or higher, otherwise the response gets cut off mid-plan.</p>
+
+<h3>Friend Curation Page (/curate)</h3>
+<p>Password-protected page where stylish friends can browse the inventory and hand-pick outfits as "curatedOutfit" documents. These curated outfits are fed into the recommendation prompt as taste references — the most reliable way to improve AI recommendation quality.</p>
+
+<h3>Bulk Upload Script</h3>
+<p>The script at <code>scripts/bulk-upload.mjs</code> takes a folder of JPEG/PNG images, uploads each to Sanity, creates a draft <code>clothingItem</code> document, calls the auto-tag API, and publishes. Usage:</p>
+<pre><code>node scripts/bulk-upload.mjs ~/Desktop/clothes-photos</code></pre>
+
+<div class="callout amber">
+  <p><strong>Note on HEIC images:</strong> iPhone HEIC format doesn't work with Sanity's upload API. Convert to JPEG first (or just screenshot the photo as a PNG).</p>
+</div>
+
+<h3>Fashion Illustrations (OpenAI DALL-E 3)</h3>
+<p>After an outfit recommendation loads, <code>OutfitResult</code> automatically calls <code>/api/illustrate</code> with the outfit description. This hits OpenAI's DALL-E 3 API and returns a fashion illustration URL. Note: ChatGPT Pro subscriptions do not include API credits — you need a separate OpenAI API billing account at platform.openai.com.</p>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="data-flow">Data Flow Diagram</h2>
+
+<div class="diagram">USER UPLOADS PHOTO TO STUDIO
+         │
+         ▼
+  Studio (embedded in Next.js /studio)
+         │
+         │ user clicks "Auto-Tag with AI"
+         ▼
+  autoTagAction.ts
+  • converts image ref → CDN URL via imageUrlBuilder
+         │
+         │ POST /api/auto-tag { imageUrl }
+         ▼
+  /api/auto-tag/route.ts
+  • sends image URL + text prompt → Claude Vision
+  • Claude returns { name, category, color, season, occasions, description }
+         │
+         │ patch.execute([{ set: tags }])
+         ▼
+  Sanity Content Lake
+  • document fields populated
+  • item now queryable by category, season, occasions
+         │
+─────────┼──────────────── (later) ─────────────────────
+         │
+USER TYPES EVENT on homepage
+         │
+         │ POST /api/recommend { eventDescription }
+         ▼
+  /api/recommend/route.ts
+  • client.fetch(ALL_CLOTHING_QUERY) → full inventory
+  • client.fetch(CURATED_OUTFITS_QUERY) → taste reference
+  • sends inventory + event + curated outfits → Claude
+  • Claude picks item IDs
+  • downloads actual item images → vibe check with Claude Vision
+  • if rejected: retry with feedback (up to 3 attempts)
+         │
+         │ returns { outfitName, items, reasoning, stylingTips }
+         ▼
+  OutfitResult component
+  • renders item photos from Sanity CDN via urlFor()
+  • auto-triggers /api/illustrate → DALL-E 3 fashion illustration</div>
+
+<!-- ─────────────────────────────────────────── -->
+<h2 id="filming-guide">Video Filming Guide</h2>
+
+<h3>Suggested Scene Order</h3>
+
+<ol>
+  <li>
+    <strong>Hook (0:00–0:30)</strong><br>
+    Show the finished app. Type "rooftop party in Ibiza" and let the recommendation load. Show the illustration. This is the "oh wow" moment up front.
+  </li>
+  <li>
+    <strong>What we're building and why Sanity (0:30–2:00)</strong><br>
+    Explain: structured CMS + AI is a powerful combo. Most AI apps use flat JSON or hardcoded data. Sanity gives you a real database with a visual editor.
+  </li>
+  <li>
+    <strong>Code walkthrough — Schema (2:00–5:00)</strong><br>
+    Open <code>clothingItem.ts</code>. Show how <code>defineType</code>/<code>defineField</code> generates Studio UI automatically. Point to the category <code>options.list</code> and explain why those values matter for the AI prompt.
+  </li>
+  <li>
+    <strong>Code walkthrough — Auto-Tag Action (5:00–9:00)</strong><br>
+    This is the demo-friendly feature. Upload a photo in Studio, click "Auto-Tag with AI", watch all fields populate. Then show the code: <code>autoTagAction.ts</code> → <code>/api/auto-tag/route.ts</code> → Claude prompt. Explain the schema-prompt connection.
+  </li>
+  <li>
+    <strong>Code walkthrough — GROQ Queries (9:00–11:00)</strong><br>
+    Show the three queries. Demo the Vision tool in Studio (sanity.io/docs/vision). Run <code>CURATED_OUTFITS_QUERY</code> and show that <code>-&gt;</code> follows the reference.
+  </li>
+  <li>
+    <strong>Code walkthrough — Recommend Route (11:00–15:00)</strong><br>
+    Walk through the three-step loop: pick → vibe check → retry. Explain why visual validation matters (text says "navy + grey" but the actual fabrics might clash).
+  </li>
+  <li>
+    <strong>Live demo (15:00–18:00)</strong><br>
+    Try 3 different event types. Show packing planner. Show curated outfits page.
+  </li>
+  <li>
+    <strong>Deploy + wrap (18:00–20:00)</strong><br>
+    Walk through Vercel deploy, adding env vars. Show the live URL.
+  </li>
+</ol>
+
+<h3>Key Talking Points for the Video</h3>
+
+<ul>
+  <li><strong>"Sanity is the database, Studio is the editor, GROQ is the query language — and you get all three for free."</strong></li>
+  <li><strong>"The schema is your contract. It defines what Claude can return."</strong> — the category values in the schema and in the prompt must match.</li>
+  <li><strong>"Embedded Studio unlocks custom workflows."</strong> The hosted studio can't run your custom document actions. Embedding it in Next.js gives you full control.</li>
+  <li><strong>"Image refs aren't URLs."</strong> Sanity stores images as references. You need <code>imageUrlBuilder</code> to get actual URLs for the CDN and for Claude Vision.</li>
+  <li><strong>"Two calls to Claude, not one."</strong> The first call picks pieces from structured data. The second call does a visual check by actually looking at the photos. This dramatically improves quality.</li>
+</ul>
+
+<hr />
+
+<p style="color:#888; font-size:0.85rem; text-align:center;">
+  MAISON Digital Closet · Built with Next.js + Sanity + Claude API · 2026
+</p>
+
+</body>
+</html>
